@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC Kart Çevrimdışı</title>
+    <script>
+        // Yönlendirme URL'sini saklamak için localStorage anahtarı
+        const redirectKey = "latestRedirect";
+
+        // URL parametresinden webhook tetiklenmesini algıla
+        function detectWebhook() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Eğer webhook=A gelirse, yönlendirmeyi güncelle
+            if (params.get("webhook") === "A") {
+                localStorage.setItem(redirectKey, "https://www.b.com");
+            }
+            // Eğer webhook=C gelirse, yönlendirmeyi güncelle
+            else if (params.get("webhook") === "C") {
+                localStorage.setItem(redirectKey, "https://www.d.com");
+            }
+            // Eğer webhook=E gelirse, hiçbir şey yapmadan sayfada kal
+            else if (params.get("webhook") === "E") {
+                localStorage.removeItem(redirectKey); // Eski yönlendirmeyi temizle
+            }
+        }
+
+        // Yönlendirme yapma fonksiyonu
+        function redirectToLatest() {
+            const latestRedirect = localStorage.getItem(redirectKey);
+
+            // Eğer bir yönlendirme varsa kullanıcıyı o URL'ye yönlendir
+            if (latestRedirect) {
+                window.location.href = latestRedirect;
+            }
+        }
+
+        // Sayfa yüklendiğinde işlemleri başlat
+        window.onload = function () {
+            detectWebhook(); // Webhook varsa algıla ve güncelle
+            redirectToLatest(); // Gerekirse yönlendirmeyi gerçekleştir
+        };
+    </script>
+</head>
+<body>
+    <h1>NFC Kart Çevrimdışı</h1>
+    <p>Lütfen kart sahibinden NFC kartı açmasını isteyin.</p>
+</body>
+</html>
