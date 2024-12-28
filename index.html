@@ -10,31 +10,32 @@
     <p>Lütfen kart sahibinden NFC kartı açmasını isteyin.</p>
 
     <script>
-        // Webhook URL'leri ve yönlendirme URL'leri
+        // Webhook ve yönlendirme URL'leri
         const webhookUrls = {
             "https://webhook-test.com/c317b6da7ed70a0bc37a2176728b0396": "https://wa.me/+905421379227",
             "https://webhook-test.com/ddf296dd120ef54b6b59dbafa78bf270": "https://instagram.com/literallynotaras",
-            "https://webhook-test.com/21ca93b37148bb6f8b2fba5a1e7ef613": null // Webhook E, yönlendirme yok
+            "https://webhook-test.com/21ca93b37148bb6f8b2fba5a1e7ef613": "stay" // Webhook E geldiğinde sayfada kal
         };
 
-        // URL parametrelerinden webhook al
+        // URL'den gelen parametreyi kontrol et
         const urlParams = new URLSearchParams(window.location.search);
         const webhookParam = urlParams.get('webhook');
 
-        // Eğer webhook parametresi varsa ve geçerli bir URL'ye sahipse
+        // Eğer geçerli bir webhook parametresi varsa
         if (webhookParam && webhookUrls[webhookParam] !== undefined) {
-            // Geçerli webhook URL'sine göre yönlendirme URL'sini localStorage'a kaydet
-            localStorage.setItem('latestRedirect', webhookUrls[webhookParam]);
-        } else if (!localStorage.getItem('latestRedirect')) {
-            // Eğer hiçbir webhook tetiklenmediyse, varsayılan sayfada kal
-            console.log('Yönlendirme yapılmayacak, sayfada kalınacak.');
+            // Eğer webhook E değilse, yönlendirme URL'sini localStorage'a kaydet
+            if (webhookUrls[webhookParam] !== "stay") {
+                localStorage.setItem('latestRedirect', webhookUrls[webhookParam]);
+            } else {
+                // Webhook E geldiğinde, yönlendirme yapılmasın ve sayfada kalsın
+                localStorage.removeItem('latestRedirect');
+            }
         }
 
-        // Sayfa yüklenince, en son gelen webhook yönlendirmesi yapılacaksa
+        // Sayfa yüklendiğinde, en son gelen webhook yönlendirmesi yapılacak
         const latestRedirect = localStorage.getItem('latestRedirect');
         if (latestRedirect) {
-            console.log('Yönlendiriliyor:', latestRedirect);
-            window.location.href = latestRedirect;
+            window.location.href = latestRedirect; // Yönlendirme
         }
 
     </script>
