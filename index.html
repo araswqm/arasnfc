@@ -1,50 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFC Kart Çevrimdışı</title>
-    <script>
-        // Yönlendirme URL'sini saklamak için localStorage anahtarı
-        const redirectKey = "latestRedirect";
-
-        // URL parametresinden webhook tetiklenmesini algıla
-        function detectWebhook() {
-            const params = new URLSearchParams(window.location.search);
-
-            // Eğer webhook=A gelirse, yönlendirmeyi güncelle
-            if (params.get("webhook") === "A") {
-                localStorage.setItem(redirectKey, "https://www.b.com");
-            }
-            // Eğer webhook=C gelirse, yönlendirmeyi güncelle
-            else if (params.get("webhook") === "C") {
-                localStorage.setItem(redirectKey, "https://www.d.com");
-            }
-            // Eğer webhook=E gelirse, hiçbir şey yapmadan sayfada kal
-            else if (params.get("webhook") === "E") {
-                localStorage.removeItem(redirectKey); // Eski yönlendirmeyi temizle
-            }
-        }
-
-        // Yönlendirme yapma fonksiyonu
-        function redirectToLatest() {
-            const latestRedirect = localStorage.getItem(redirectKey);
-
-            // Eğer bir yönlendirme varsa kullanıcıyı o URL'ye yönlendir
-            if (latestRedirect) {
-                window.location.href = latestRedirect;
-            }
-        }
-
-        // Sayfa yüklendiğinde işlemleri başlat
-        window.onload = function () {
-            detectWebhook(); // Webhook varsa algıla ve güncelle
-            redirectToLatest(); // Gerekirse yönlendirmeyi gerçekleştir
-        };
-    </script>
+    <title>ArasNFC</title>
 </head>
 <body>
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı açmasını isteyin.</p>
+
+    <script>
+        // Webhook URL'leri ve yönlendirme URL'leri
+        const webhookUrls = {
+            "https://webhook-test.com/c317b6da7ed70a0bc37a2176728b0396": "https://wa.me/+905421379227",
+            "https://webhook-test.com/ddf296dd120ef54b6b59dbafa78bf270": "https://instagram.com/literallynotaras",
+            "https://webhook-test.com/21ca93b37148bb6f8b2fba5a1e7ef613": null // Webhook E, yönlendirme yok
+        };
+
+        // URL parametrelerinden webhook al
+        const urlParams = new URLSearchParams(window.location.search);
+        const webhookParam = urlParams.get('webhook');
+
+        // Eğer webhook parametresi varsa ve geçerli bir URL'ye sahipse
+        if (webhookParam && webhookUrls[webhookParam] !== undefined) {
+            // Geçerli webhook URL'sine göre yönlendirme URL'sini localStorage'a kaydet
+            localStorage.setItem('latestRedirect', webhookUrls[webhookParam]);
+        } else if (!localStorage.getItem('latestRedirect')) {
+            // Eğer hiçbir webhook tetiklenmediyse, varsayılan sayfada kal
+            console.log('Yönlendirme yapılmayacak, sayfada kalınacak.');
+        }
+
+        // Sayfa yüklenince, en son gelen webhook yönlendirmesi yapılacaksa
+        const latestRedirect = localStorage.getItem('latestRedirect');
+        if (latestRedirect) {
+            console.log('Yönlendiriliyor:', latestRedirect);
+            window.location.href = latestRedirect;
+        }
+
+    </script>
 </body>
 </html>
