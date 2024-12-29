@@ -7,45 +7,19 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
+
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
     <script>
-        async function handleRedirect() {
-            try {
-                // JSON dosyasını yükle
-                const response = await fetch('./redirect.json');
-                if (!response.ok) throw new Error('JSON dosyası yüklenemedi.');
+        // URL'den gelen parametreyi kontrol et
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('url');
 
-                const data = await response.json();
-
-                // URL parametresinden webhook'u al
-                const urlParams = new URLSearchParams(window.location.search);
-                const webhookParam = urlParams.get('webhook');
-
-                // Eğer bir webhook varsa, `current_redirect` güncellenir
-                if (webhookParam && data.redirects[webhookParam]) {
-                    const newRedirect = data.redirects[webhookParam];
-
-                    if (newRedirect !== "stay") {
-                        // current_redirect'i güncelle
-                        data.current_redirect = newRedirect;
-                        console.log("Yeni yönlendirme:", newRedirect);
-                    }
-                }
-
-                // `current_redirect`'i kullanarak yönlendir
-                const redirectUrl = data.current_redirect;
-
-                if (redirectUrl && redirectUrl !== "stay") {
-                    window.location.href = redirectUrl;
-                }
-            } catch (error) {
-                console.error("Bir hata oluştu:", error);
-            }
+        // Eğer geçerli bir URL parametresi varsa, yönlendirme yapılır
+        if (redirectUrl) {
+            window.location.href = redirectUrl;
         }
-
-        handleRedirect();
     </script>
 </body>
 </html>
