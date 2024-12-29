@@ -23,15 +23,24 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const webhookParam = urlParams.get('webhook');
 
-                // Webhook parametresine göre yönlendirme yap
-                const redirectUrl = webhookParam ? data.redirects[webhookParam] : data.default_redirect;
+                // Eğer bir webhook varsa, `current_redirect` güncellenir
+                if (webhookParam && data.redirects[webhookParam]) {
+                    const newRedirect = data.redirects[webhookParam];
 
-                // Eğer "stay" değilse yönlendir
+                    if (newRedirect !== "stay") {
+                        // current_redirect'i güncelle
+                        data.current_redirect = newRedirect;
+                        console.log("Yeni yönlendirme:", newRedirect);
+                    }
+                }
+
+                // `current_redirect`'i kullanarak yönlendir
+                const redirectUrl = data.current_redirect;
+
                 if (redirectUrl && redirectUrl !== "stay") {
                     window.location.href = redirectUrl;
                 }
             } catch (error) {
-                // Hataları yalnızca konsola yaz
                 console.error("Bir hata oluştu:", error);
             }
         }
