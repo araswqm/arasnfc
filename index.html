@@ -11,34 +11,28 @@
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
     <script>
-        // JSON dosyasını yükleyip yönlendirme işlemini yap
         async function handleRedirect() {
             try {
-                // JSON dosyasını al
+                // redirect.json dosyasını yükle
                 const response = await fetch('./redirect.json');
+                if (!response.ok) throw new Error('JSON dosyası yüklenemedi.');
+
                 const data = await response.json();
 
                 // URL parametresinden webhook'u al
                 const urlParams = new URLSearchParams(window.location.search);
                 const webhookParam = urlParams.get('webhook');
 
-                // Webhook parametresine göre yönlendirme yap
-                if (webhookParam && data.redirects[webhookParam]) {
-                    const redirectUrl = data.redirects[webhookParam];
+                // Geçerli bir webhook varsa onun URL'sini al, yoksa varsayılanı kullan
+                const redirectUrl = webhookParam ? data.redirects[webhookParam] : data.default_redirect;
 
-                    // Eğer "stay" değilse yönlendir
-                    if (redirectUrl !== "stay") {
-                        window.location.href = redirectUrl;
-                    }
-                } else {
-                    // Geçerli webhook yoksa varsayılan yönlendirme
-                    if (data.default_redirect !== "stay") {
-                        window.location.href = data.default_redirect;
-                    }
+                // Eğer "stay" değilse yönlendir
+                if (redirectUrl && redirectUrl !== "stay") {
+                    window.location.href = redirectUrl;
                 }
             } catch (error) {
                 // Hataları yalnızca konsola yaz
-                console.error("Redirect JSON dosyası yüklenemedi:", error);
+                console.error("Bir hata oluştu:", error);
             }
         }
 
