@@ -4,42 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArasNFC</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
-</body>
-
+<body>
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
     <script>
-        // Webhook ve yönlendirme URL'leri
-        const webhookUrls = {
-            "https://webhook-test.com/c317b6da7ed70a0bc37a2176728b0396": "https://wa.me/+905421379227",
-            "https://webhook-test.com/ddf296dd120ef54b6b59dbafa78bf270": "https://instagram.com/literallynotaras",
-            "https://webhook-test.com/21ca93b37148bb6f8b2fba5a1e7ef613": "stay" // Webhook E geldiğinde sayfada kal
-        };
+        // JSON dosyasını yükleyip yönlendirme işlemini yap
+        async function handleRedirect() {
+            try {
+                // JSON dosyasını al
+                const response = await fetch('./redirect.json');
+                const data = await response.json();
 
-        // URL'den gelen parametreyi kontrol et
-        const urlParams = new URLSearchParams(window.location.search);
-        const webhookParam = urlParams.get('webhook');
+                // URL parametresinden webhook'u al
+                const urlParams = new URLSearchParams(window.location.search);
+                const webhookParam = urlParams.get('webhook');
 
-        // Eğer geçerli bir webhook parametresi varsa
-        if (webhookParam && webhookUrls[webhookParam] !== undefined) {
-            // Eğer webhook E değilse, yönlendirme URL'sini localStorage'a kaydet
-            if (webhookUrls[webhookParam] !== "stay") {
-                localStorage.setItem('latestRedirect', webhookUrls[webhookParam]);
-            } else {
-                // Webhook E geldiğinde, yönlendirme yapılmasın ve sayfada kalsın
-                localStorage.removeItem('latestRedirect');
+                // Webhook parametresine göre yönlendirme yap
+                if (webhookParam && data.redirects[webhookParam]) {
+                    const redirectUrl = data.redirects[webhookParam];
+
+                    // Eğer "stay" değilse yönlendir
+                    if (redirectUrl !== "stay") {
+                        window.location.href = redirectUrl;
+                    }
+                } else {
+                    // Geçerli webhook yoksa varsayılan yönlendirme
+                    if (data.default_redirect !== "stay") {
+                        window.location.href = data.default_redirect;
+                    }
+                }
+            } catch (error) {
+                // Hataları yalnızca konsola yaz
+                console.error("Redirect JSON dosyası yüklenemedi:", error);
             }
         }
 
-        // Sayfa yüklendiğinde, en son gelen webhook yönlendirmesi yapılacak
-        const latestRedirect = localStorage.getItem('latestRedirect');
-        if (latestRedirect) {
-            window.location.href = latestRedirect; // Yönlendirme
-        }
-
+        handleRedirect();
     </script>
 </body>
 </html>
