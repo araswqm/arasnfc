@@ -13,7 +13,7 @@
     <script>
         async function handleRedirect() {
             try {
-                // redirect.json dosyasını yükle
+                // JSON dosyasını yükle
                 const response = await fetch('./redirect.json');
                 if (!response.ok) throw new Error('JSON dosyası yüklenemedi.');
 
@@ -23,7 +23,7 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const webhookParam = urlParams.get('webhook');
 
-                // Geçerli bir webhook varsa onun URL'sini al, yoksa varsayılanı kullan
+                // Webhook parametresine göre yönlendirme yap
                 const redirectUrl = webhookParam ? data.redirects[webhookParam] : data.default_redirect;
 
                 // Eğer "stay" değilse yönlendir
