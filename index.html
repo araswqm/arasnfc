@@ -7,19 +7,33 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
     <script>
-        // URL'den gelen parametreyi kontrol et
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirectUrl = urlParams.get('url');
+        // JSON dosyasının URL'si (GitHub'dan çekilecek)
+        const jsonUrl = "https://raw.githubusercontent.com/kullanici_adi/proje_adi/main/redirect.json";
 
-        // Eğer geçerli bir URL parametresi varsa, yönlendirme yapılır
-        if (redirectUrl) {
-            window.location.href = redirectUrl;
-        }
+        // JSON dosyasını çek ve yönlendirme yap
+        fetch(jsonUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("JSON dosyası alınamadı.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                // JSON dosyasındaki redirectUrl değerini al
+                const redirectUrl = data.redirectUrl;
+                if (redirectUrl) {
+                    window.location.href = redirectUrl; // Yönlendirme
+                }
+            })
+            .catch(error => {
+                // Hata oluştuğunda konsola yazdır
+                console.error("Bir hata oluştu:", error);
+                // Sayfa aynı şekilde kalır, ek bir mesaj gösterilmez
+            });
     </script>
 </body>
 </html>
