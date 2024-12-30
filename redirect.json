@@ -1,9 +1,3 @@
 {
-    "redirects": {
-        "https://webhook-test.com/c317b6da7ed70a0bc37a2176728b0396": "https://wa.me/+905421379227",
-        "https://webhook-test.com/ddf296dd120ef54b6b59dbafa78bf270": "https://instagram.com/literallynotaras",
-        "https://webhook-test.com/21ca93b37148bb6f8b2fba5a1e7ef613": "stay"
-    },
-    "default_redirect": "stay",
-    "current_redirect": "stay"
+    "redirectUrl": "https://eski-link.com"
 }
