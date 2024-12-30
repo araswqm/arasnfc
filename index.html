@@ -10,30 +10,4 @@
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
-    <script>
-        // JSON dosyasının URL'si (GitHub'dan çekilecek)
-        const jsonUrl = "https://raw.githubusercontent.com/araswqm/arasnfc/main/redirect.json";
-
-        // JSON dosyasını çek ve yönlendirme yap
-        fetch(jsonUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("JSON dosyası alınamadı.");
-                }
-                return response.json();
-            })
-            .then(data => {
-                // JSON dosyasındaki redirectUrl değerini al
-                const redirectUrl = data.redirectUrl;
-                if (redirectUrl) {
-                    window.location.href = redirectUrl; // Yönlendirme
-                }
-            })
-            .catch(error => {
-                // Hata oluştuğunda konsola yazdır
-                console.error("Bir hata oluştu:", error);
-                // Sayfa aynı şekilde kalır, ek bir mesaj gösterilmez
-            });
-    </script>
-</body>
-</html>
+<meta http-equiv="refresh" content="0;url=https://araswqm.github.io/arasnfc/under.construction.html">
