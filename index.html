@@ -10,4 +10,33 @@
     <h1>NFC Kart Çevrimdışı</h1>
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
-<meta http-equiv="refresh" content="0;url=https://araswqm.github.io/arasnfc/under.construction.html">
+    <script>
+      // Google Apps Script Web Uygulaması URL'sini buraya ekleyin
+      const scriptUrl = "YOUR_SCRIPT_URL";
+
+      async function redirectToUrl() {
+        try {
+          // Apps Script'ten redirect.txt içeriğini al
+          const response = await fetch(scriptUrl);
+          const url = await response.text(); // İçeriği metin olarak al
+          const trimmedUrl = url.trim(); // Boşlukları temizle
+
+          if (trimmedUrl.startsWith("http")) {
+            // Eğer geçerli bir URL varsa, yönlendir
+            window.location.href = trimmedUrl;
+          } else {
+            // Geçerli değilse hata mesajı göster
+            document.body.innerHTML = "<h1>NFC Kart Çevrimdışı</h1>
+    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>";
+          }
+        } catch (error) {
+          // Hata durumunda kullanıcıya mesaj göster
+          document.body.innerHTML = `<p>Hata oluştu: ${error.message}</p>`;
+        }
+      }
+
+      // Sayfa yüklendiğinde yönlendirme başlat
+      window.onload = redirectToUrl;
+    </script>
+  </head>
+</html> 
