@@ -11,28 +11,23 @@
     <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>
 
     <script>
-      // Google Apps Script Web Uygulaması URL'sini buraya ekleyin
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbzZCNllUCQ2OgK8BIO3OWiTVOHe1OjuIyN7oM8sn5XEfs1NjYPvX17Z1X8S-dm4IDAcAg/exec";
+      // Google Apps Script Web Uygulaması URL'si
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbyHnlGChGH9RuzaHjFwtsmS7DlwRnzfmCQ-tYA93QEg9doXs-_sy9CmdZ381or1QCT6tQ/exec";
 
       async function redirectToUrl() {
         try {
           // Apps Script'ten redirect.txt içeriğini al
           const response = await fetch(scriptUrl);
-          const url = await response.text(); // İçeriği metin olarak al
-          const trimmedUrl = url.trim(); // Boşlukları temizle
 
-          if (trimmedUrl.startsWith("http")) {
-            // Eğer geçerli bir URL varsa, yönlendir
-            window.location.href = trimmedUrl;
-          } else {
-            // Geçerli değilse hata mesajı göster
-            document.body.innerHTML = "<h1>NFC Kart Çevrimdışı</h1>
-    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>";
+          if (!response.ok) {
+            throw new Error(`HTTP Hatası: ${response.status}`);
           }
+
+          const url = await response.text(); // İçeriği metin olarak al
+          window.location.href = url; // Yönlendirme yap
         } catch (error) {
           // Hata durumunda kullanıcıya mesaj göster
-          document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
-    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
+          document.body.innerHTML = `<p>Bir hata oluştu: ${error.message}</p>`;
         }
       }
 
