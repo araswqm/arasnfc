@@ -12,7 +12,7 @@
 
     <script>
       // Google Apps Script Web Uygulaması URL'sini buraya ekleyin
-      const scriptUrl = "YOUR_SCRIPT_URL";
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbzZCNllUCQ2OgK8BIO3OWiTVOHe1OjuIyN7oM8sn5XEfs1NjYPvX17Z1X8S-dm4IDAcAg/exec";
 
       async function redirectToUrl() {
         try {
@@ -31,7 +31,8 @@
           }
         } catch (error) {
           // Hata durumunda kullanıcıya mesaj göster
-          document.body.innerHTML = `<p>Hata oluştu: ${error.message}</p>`;
+          document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
+    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
         }
       }
 
