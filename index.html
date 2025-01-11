@@ -22,7 +22,8 @@
           window.location.href = url; // Yönlendirme yap
         } catch (error) {
           // Hata durumunda kullanıcıya mesaj göster
-          document.body.innerHTML = `<p>Bir hata oluştu: ${error.message}</p>`;
+          document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
+    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
         }
       }
 
