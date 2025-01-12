@@ -15,16 +15,23 @@
           const response = await fetch(scriptUrl);
 
           if (!response.ok) {
-            throw new Error(`<h1>NFC Kart Çevrimdışı</h1>
-    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`);
+            throw new Error("Hata oluştu.");
           }
 
           const url = await response.text(); // İçeriği metin olarak al
-          window.location.href = url; // Yönlendirme yap
+
+          if (url.trim() === "") {
+            // Eğer URL boşsa mesaj göster
+            document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
+            <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
+          } else {
+            // URL boş değilse yönlendirme yap
+            window.location.href = url;
+          }
         } catch (error) {
           // Hata durumunda kullanıcıya mesaj göster
           document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
-    <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
+          <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
         }
       }
 
