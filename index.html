@@ -6,36 +6,30 @@
     <title>ArasNFC</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <script>
-      // Google Apps Script Web Uygulaması URL'si
       const scriptUrl = "https://script.google.com/macros/s/AKfycbyHnlGChGH9RuzaHjFwtsmS7DlwRnzfmCQ-tYA93QEg9doXs-_sy9CmdZ381or1QCT6tQ/exec";
 
       async function redirectToUrl() {
         try {
-          // Apps Script'ten redirect.txt içeriğini al
           const response = await fetch(scriptUrl);
 
           if (!response.ok) {
             throw new Error("Hata oluştu.");
           }
 
-          const url = await response.text(); // İçeriği metin olarak al
+          const url = await response.text();
 
           if (url.trim() === "") {
-            // Eğer URL boşsa mesaj göster
             document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
             <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
           } else {
-            // URL boş değilse yönlendirme yap
             window.location.href = url;
           }
         } catch (error) {
-          // Hata durumunda kullanıcıya mesaj göster
           document.body.innerHTML = `<h1>NFC Kart Çevrimdışı</h1>
           <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
         }
       }
 
-      // Sayfa yüklendiğinde yönlendirme başlat
       window.onload = redirectToUrl;
     </script>
 </head>
