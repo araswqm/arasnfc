@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kayıp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+      color: white;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(30px); 
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      padding: 20px 20px; /* Kenarlardan daha küçük padding */
+      text-align: center;
+      max-width: 400px; /* Daha dar genişlik */
+      width: 90%;
+    }
+
+    .card h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .contact {
+      margin-top: 15px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+
+    .contact a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .contact a:hover {
+      text-decoration: underline;
+    }
+
+    .icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    .icon img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Kayıp</h1>
+    <p>Eğer bu kartı bulduysanız, lütfen aşağıdaki iletişim bilgilerini kullanarak bana ulaşın.</p>
+    <div class="contact">
+      <div class="contact-item">
+        <span>Telefon:</span>
+        <a href="tel:+905421379227">+905421379227</a>
+        <a href="https://wa.me/+905421379227" target="_blank" class="icon">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        </a>
+      </div>
+      <div class="contact-item">
+        <span>Eposta:</span>
+        <a href="mailto:arasatal1634@gmail.com">arasatal1634@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
