@@ -8,9 +8,41 @@
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
     <script>
       const scriptUrl = "https://script.google.com/macros/s/AKfycbyHnlGChGH9RuzaHjFwtsmS7DlwRnzfmCQ-tYA93QEg9doXs-_sy9CmdZ381or1QCT6tQ/exec";
+      const logScriptUrl = "https://script.google.com/macros/s/AKfycbwwFyFkhxE5ySFgE8kOqMWUADL-YhbPSxE1pQ41UP27PbLuSr2lqOiR7uCVg4qnEX5r/exec";
+
+      async function getUserInfo() {
+        try {
+          const ipResponse = await fetch("https://ip-api.com/json/");
+          const ipData = await ipResponse.json();
+
+          const now = new Date();
+          const timeString = now.toLocaleTimeString("tr-TR", { hour12: false });
+
+          return {
+            ip: ipData.query,
+            city: ipData.city,
+            country: ipData.country,
+            time: timeString
+          };
+        } catch (error) {
+          return null;
+        }
+      }
+
+      async function logUserInfo() {
+        const userInfo = await getUserInfo();
+        if (userInfo) {
+          fetch(logScriptUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userInfo)
+          });
+        }
+      }
 
       async function redirectToUrl() {
         try {
+          await logUserInfo();
           const response = await fetch(scriptUrl);
 
           if (!response.ok) {
@@ -95,7 +127,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/NFC_logo.svg" alt="NFC Logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/NFC_logo.svg">
         <span>ArasNFC</span>
     </div>
     <div class="card">
