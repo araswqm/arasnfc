@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,62 +7,119 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
     <script>
-      const logScriptUrl = "https://script.google.com/macros/s/AKfycbx-HwdTIdQR4WbIxg5-Py_8oj1UTTr18l_koU-Cs2hhc-32tThSswnzPxX7GrG5cLRwTw/exec";
-      const redirectScriptUrl = "https://script.google.com/macros/s/AKfycbyHnlGChGH9RuzaHjFwtsmS7DlwRnzfmCQ-tYA93QEg9doXs-_sy9CmdZ381or1QCT6tQ/exec";async function getUserInfo() {
-    try {
-      const ipResponse = await fetch("https://api64.ipify.org?format=json");
-      const ipData = await ipResponse.json();
-      const ip = ipData.ip || "Bilinmiyor";
-      
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const lat = position.coords.latitude || "Bilinmiyor";
-        const lon = position.coords.longitude || "Bilinmiyor";
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbyHnlGChGH9RuzaHjFwtsmS7DlwRnzfmCQ-tYA93QEg9doXs-_sy9CmdZ381or1QCT6tQ/exec";
+      const logScriptUrl = "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+      async function sendLog(location, ip, time) {
+        try {
+          await fetch(logScriptUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ location, ip, time })
+          });
+        } catch (error) {
+          console.error("Log gönderme hatası:", error);
+        }
+      }
+
+      async function getUserData() {
+        let location = "Bilinmiyor";
+        let ip = "Bilinmiyor";
         const time = new Date().toLocaleTimeString("tr-TR");
 
-        await fetch(logScriptUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({ lat, lon, ip, time })
-        });
-      }, async () => {
-        const time = new Date().toLocaleTimeString("tr-TR");
-        await fetch(logScriptUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({ lat: "Bilinmiyor", lon: "Bilinmiyor", ip, time })
-        });
-      });
-    } catch (error) {
-      console.error("Veri alınamadı:", error);
-    }
-  }
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              location = `${position.coords.latitude}, ${position.coords.longitude}`;
+              ip = await fetch("https://api64.ipify.org?format=json").then(res => res.json()).then(data => data.ip).catch(() => "Bilinmiyor");
+              sendLog(location, ip, time);
+            },
+            () => sendLog(location, ip, time)
+          );
+        } else {
+          sendLog(location, ip, time);
+        }
+      }
 
-  async function redirectToUrl() {
-    await getUserInfo();
-    try {
-      const response = await fetch(redirectScriptUrl);
-      if (!response.ok) throw new Error("Hata oluştu.");
-      const url = await response.text();
-      if (url.trim() === "") showOfflineMessage();
-      else window.location.href = url;
-    } catch (error) {
-      showOfflineMessage();
-    }
-  }
+      async function redirectToUrl() {
+        try {
+          getUserData();
+          const response = await fetch(scriptUrl);
+          if (!response.ok) throw new Error("Hata oluştu.");
+          const url = await response.text();
+          if (url.trim() === "") {
+            showOfflineMessage();
+          } else {
+            window.location.href = url;
+          }
+        } catch (error) {
+          showOfflineMessage();
+        }
+      }
 
-  function showOfflineMessage() {
-    document.querySelector(".card").innerHTML = `<h1>NFC Kart Çevrimdışı</h1><p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
-  }
+      function showOfflineMessage() {
+        document.querySelector(".card").innerHTML = `
+          <h1>NFC Kart Çevrimdışı</h1>
+          <p>Lütfen kart sahibinden NFC kartı aktifleştirmesini isteyin.</p>`;
+      }
 
-  window.onload = redirectToUrl;
-</script>
-<style>
-  body { margin: 0; font-family: 'SF Pro Display', sans-serif; background: #0d0d0d; color: white; height: 100vh; display: flex; justify-content: center; align-items: center; }
-  .card { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(30px); border-radius: 20px; padding: 20px 40px; text-align: center; }
-</style>
-
+      window.onload = redirectToUrl;
+    </script>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'SF Pro Display', sans-serif;
+        background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+        color: white;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .header {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header img {
+        width: 40px;
+        height: 40px;
+        filter: invert(1);
+      }
+      .header span {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(30px);
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+        padding: 20px 40px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+      }
+      .card h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+      .card p {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+    </style>
 </head>
 <body>
+    <div class="header">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/75/NFC_logo.svg">
+        <span>ArasNFC</span>
+    </div>
     <div class="card">
       <h1>Yönlendiriliyor...</h1>
       <p>Lütfen sayfada kalınız.</p>
