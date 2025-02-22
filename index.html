@@ -12,13 +12,13 @@
 
       async function sendLog(location, ip, time) {
         try {
-          const response = await fetch(`${logScriptUrl}?v=${Date.now()}`, { // Önbellekleme sorunu önleniyor
+          const response = await fetch(`${logScriptUrl}?v=${Date.now()}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ location, ip, time }),
-            referrerPolicy: "no-referrer", // CORS kaynaklı hataları önleme
+            referrerPolicy: "no-referrer",
           });
 
           if (!response.ok) throw new Error("Log kaydedilemedi.");
@@ -36,7 +36,6 @@
         const time = new Date().toLocaleTimeString("tr-TR");
 
         try {
-          // IP adresini HTTPS ile al
           const ipResponse = await fetch("https://api64.ipify.org?format=json");
           if (ipResponse.ok) {
             const ipData = await ipResponse.json();
@@ -56,7 +55,7 @@
               console.warn("Konum alınamadı:", error.message);
               sendLog(location, ip, time);
             },
-            { timeout: 5000 } // Konum alım süresini sınırlandır
+            { timeout: 5000 }
           );
         } else {
           sendLog(location, ip, time);
@@ -65,7 +64,7 @@
 
       async function redirectToUrl() {
         try {
-          getUserData(); // Kullanıcı bilgilerini al ve logla
+          getUserData();
 
           const response = await fetch(`${scriptUrl}?v=${Date.now()}`); // Önbellekleme sorunu önleniyor
           if (!response.ok) throw new Error("Hata oluştu.");
