@@ -25,27 +25,14 @@
     let ip = "Bilinmiyor";
     const time = new Date().toLocaleTimeString("tr-TR");
 
-    try {
-      const ipResponse = await fetch("https://api64.ipify.org?format=json");
-      if (ipResponse.ok) {
-        const ipData = await ipResponse.json();
-        ip = ipData.ip;
-      }
-    } catch (error) {
-      console.error("IP alınamadı:", error);
-    }
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
+        async (position) => {
           location = `${position.coords.latitude}, ${position.coords.longitude}`;
+          ip = await fetch("https://api64.ipify.org?format=json").then(res => res.json()).then(data => data.ip).catch(() => "Bilinmiyor");
           sendLog(location, ip, time);
         },
-        (error) => {
-          console.error("Konum alınamadı:", error);
-          sendLog(location, ip, time);
-        },
-        { timeout: 5000 }
+        () => sendLog(location, ip, time)
       );
     } else {
       sendLog(location, ip, time);
