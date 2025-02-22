@@ -13,10 +13,8 @@
       await fetch(logScriptUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        mode: "no-cors",
         body: JSON.stringify({ location, ip, time })
       });
-      console.log("Log başarıyla gönderildi.");
     } catch (error) {
       console.error("Log gönderme hatası:", error);
     }
@@ -33,8 +31,8 @@
         const ipData = await ipResponse.json();
         ip = ipData.ip;
       }
-    } catch {
-      console.warn("IP adresi alınamadı.");
+    } catch (error) {
+      console.error("IP alınamadı:", error);
     }
 
     if (navigator.geolocation) {
@@ -44,7 +42,7 @@
           sendLog(location, ip, time);
         },
         (error) => {
-          console.warn("Konum alınamadı:", error.message);
+          console.error("Konum alınamadı:", error);
           sendLog(location, ip, time);
         },
         { timeout: 5000 }
