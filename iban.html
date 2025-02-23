@@ -17,9 +17,9 @@
               let url = await response.text();
               url = decodeURIComponent(url.trim()); //
 
-              let iban = url.replace("https://araswqm.github.io/arasnfc/iban.html/?", "").trim(); //
+              let iban = url.replace("https://araswqm.github.io/arasnfc/iban.html?", "").trim(); //
               
-              iban = iban.replace(/^/?iban=/, "").trim(); //
+              iban = iban.replace(/^iban=/, "").trim(); //
               
               updateIbanBox(iban);
           } catch (error) {
